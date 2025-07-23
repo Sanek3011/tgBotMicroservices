@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: telegram-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: false
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+UserServiceRest:
+  restURL: http://localhost:8081/api/v1/roles/non-guest
+
+telegram:
+  bot:
+    username: ${TELEGRAM_BOT_USERNAME:microbBOT}
+    token: ${TELEGRAM_BOT_TOKEN:8142733256:AAGVAhvQ2yGF3do6yfsy-re3FzPotWmSfqY}
+server:
+  port: 8082
