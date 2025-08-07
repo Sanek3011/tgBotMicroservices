@@ -1,16 +1,22 @@
 package org.example.kafka.events;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserUpdateEvent {
-    Long tgId;
-    String name;
-    String role;
-    Integer score;
+    private UUID eventId;
+    private Long id;
+    private Long tgId;
+    private String name;
+    private String role;
+    private Integer score;
+    private Long initiatorTgId;
 }
 

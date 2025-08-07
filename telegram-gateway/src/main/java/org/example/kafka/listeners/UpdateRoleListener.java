@@ -17,6 +17,6 @@ public class UpdateRoleListener {
                     "spring.json.value.default.type=org.example.kafka.events.UserRoleEvent",
             })
     public void changeRoleListen(UserRoleEvent event) {
-        telegramBaseService.updateRole(event.getTgId(), event.getRole());
+        telegramBaseService.updateRole(event);
     }
 }

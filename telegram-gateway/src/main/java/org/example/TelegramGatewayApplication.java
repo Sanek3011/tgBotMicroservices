@@ -8,6 +8,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import org.h2.tools.Server;
 
 @EnableKafka
 @SpringBootApplication
@@ -19,6 +20,7 @@ public class TelegramGatewayApplication {
 			TGBot bot = context.getBean(TGBot.class);
 			TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
 			botsApi.registerBot(bot);
+			Server.createTcpServer("-tcpAllowOthers", "-tcpPort", "9091").start();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

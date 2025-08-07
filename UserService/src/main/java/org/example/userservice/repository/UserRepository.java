@@ -15,4 +15,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByTelegramId(Long telegramId);
 
     List<User> findByRoleNotIn(Collection<Role> roles);
+
+    Optional<User> findByName(String name);
 }

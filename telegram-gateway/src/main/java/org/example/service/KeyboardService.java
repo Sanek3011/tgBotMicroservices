@@ -2,6 +2,7 @@ package org.example.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.entity.TelegramUser;
+import org.example.entity.dto.ItemDto;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -27,7 +28,7 @@ public class KeyboardService {
             List.of(createButton("Изменить роль пользователю", "changeRole"),
                     createButton("Масс.Рассылка", "sendAll")),
             List.of(createButton("Установить баллы", "modifyScore"),
-                    createButton("Заказы за баллы", "getAllOrders")),
+                    createButton("Заказы за баллы", "checkOrder")),
             List.of(createButton("Назад", "backToMain")) // Кнопка для выхода из админ-меню
     );
 
@@ -85,23 +86,22 @@ public class KeyboardService {
         return markup;
     }
 
-//    public InlineKeyboardMarkup getShopKeyboard() {
-//        List<ItemDto> allItems = itemService.getAllItems();
-//
-//        List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
-//        List<InlineKeyboardButton> buttons = new ArrayList<>();
-//
-//        for (int i = 0; i < allItems.size(); i++) {
-//            InlineKeyboardButton button = createButton(allItems.get(i).getDesc(), allItems.get(i).getType());
-//            buttons.add(button);
-//            if (i % 2 == 0 || i == allItems.size() - 1) {
-//                rowsInLine.add(buttons);
-//                buttons = new ArrayList<>();
-//            }
-//        }
-//        return new InlineKeyboardMarkup(rowsInLine);
-//
-//    }
+    public InlineKeyboardMarkup getShopKeyboard(List<ItemDto> allItems) {
+
+        List<List<InlineKeyboardButton>> rowsInLine = new ArrayList<>();
+        List<InlineKeyboardButton> buttons = new ArrayList<>();
+
+        for (int i = 0; i < allItems.size(); i++) {
+            InlineKeyboardButton button = createButton(allItems.get(i).getDesc(), "ORDER_"+allItems.get(i).getType());
+            buttons.add(button);
+            if (i % 2 == 0 || i == allItems.size() - 1) {
+                rowsInLine.add(buttons);
+                buttons = new ArrayList<>();
+            }
+        }
+        return new InlineKeyboardMarkup(rowsInLine);
+
+    }
 //    public InlineKeyboardMarkup getReportTypeButtons() {
 //        List<ReportActivityDto> reportActivityDtoList = reportActivityService.findAllDtos();
 //

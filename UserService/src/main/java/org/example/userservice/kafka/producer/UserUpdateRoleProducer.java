@@ -13,6 +13,6 @@ public class UserUpdateRoleProducer {
     public static final String TOPIC = "user.update.role";
 
     public void sendNotification (UserRoleEvent event) {
-        kafkaTemplate.send(TOPIC, event.getTgId().toString(), event);
+        kafkaTemplate.send(TOPIC, event.getEventId().toString(), event);
     }
 }

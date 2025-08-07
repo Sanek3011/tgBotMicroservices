@@ -5,6 +5,7 @@ spring:
     password:
     driver-class-name: org.h2.Driver
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
     show-sql: true
@@ -22,8 +23,9 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
-UserServiceRest:
-  restURL: http://localhost:8081/api/v1/roles/non-guest
+services-rest:
+  user-service-url: http://localhost:8081/api/v1/
+  order-service-url: http://localhost:8083/api/v1/
 
 telegram:
   bot:

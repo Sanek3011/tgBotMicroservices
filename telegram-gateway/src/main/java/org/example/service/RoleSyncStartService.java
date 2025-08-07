@@ -17,12 +17,12 @@ public class RoleSyncStartService {
 
     private final RestTemplate restTemplate;
     private final TelegramBaseService service;
-    @Value("${UserServiceRest.restURL}")
+    @Value("${services-rest.user-service-url}")
     private String roleURL;
 
     public void syncRoles() {
         ResponseEntity<List<UserRoleEvent>> exchange = restTemplate.exchange(
-                roleURL,
+                roleURL+"roles/non-guest",
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<>() {
