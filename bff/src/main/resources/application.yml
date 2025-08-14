@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: bff
+  thymeleaf:
+    cache: false
+services:
+  user-service:
+    url: ${user-service-url:http://localhost:8081/api/v1}
+  order-service:
+    url: ${order-service-url:http://localhost:8083/api/v1}
+  report-service:
+    url: ${report-service-url:http://localhost:8084/api/v1}
+
+
+server:
+  port: 8085

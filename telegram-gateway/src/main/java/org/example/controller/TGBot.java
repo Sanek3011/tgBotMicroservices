@@ -11,6 +11,7 @@ import org.example.kafka.events.UserRoleEvent;
 import org.example.kafka.events.UserUpdateEvent;
 import org.example.kafka.producer.UpdateUserProducer;
 import org.example.service.KeyboardService;
+import org.example.service.PaginationService;
 import org.example.service.RoleSyncStartService;
 import org.example.service.TelegramBaseService;
 import org.example.tempStorage.TempStorageManager;
@@ -42,6 +43,7 @@ public class TGBot extends TelegramLongPollingBot {
     private final RoleSyncStartService roleSyncStartService;
     private final Map<String, CommandHandler> commandHandlers;
     private final TempStorageManager tempStorageManager;
+    private final PaginationService paginationService;
 
 
     @PostConstruct
@@ -55,7 +57,7 @@ public class TGBot extends TelegramLongPollingBot {
                  UpdateUserProducer producer,
                  RoleSyncStartService roleSyncStartService,
                  TelegramBaseService telegramBaseService,
-                 TempStorageManager tempStorageManager) {
+                 TempStorageManager tempStorageManager, PaginationService paginationService) {
         this.commandHandlers = handlers.stream()
                 .collect(Collectors.toMap(
                         CommandHandler::getCommandName,
@@ -66,6 +68,7 @@ public class TGBot extends TelegramLongPollingBot {
         this.roleSyncStartService = roleSyncStartService;
         this.telegramBaseService = telegramBaseService;
         this.tempStorageManager = tempStorageManager;
+        this.paginationService = paginationService;
     }
 
     @Override
@@ -135,13 +138,24 @@ public class TGBot extends TelegramLongPollingBot {
                 executeMessageFromHandlers(commandHandlers.get("changeRole").handle(update, user));
                 break;
             case CHECK_ORDERS:
-                executeMessageFromHandlers(commandHandlers.get("checkOrder").handle(update, user));
+                executeMessageFromHandlers(commandHandlers.get("showOrders").handle(update, user));
                 break;
+            case CHECK_REPORTS:
+                executeMessageFromHandlers(commandHandlers.get("getAllReports").handle(update, user));
+                break;
+            case WAITING_IMG:
+            case WAITING_DESCRIPTION:
+            case WAITING_QUANTITY:
+                executeMessageFromHandlers(commandHandlers.get("createReport").handle(update, user));
         }
     }
 
     private void handleQuery(String data, TelegramUser user) {
+        System.out.println(data);
         switch (data) {
+            case String s when s.startsWith("REPORT_TYPE"):
+                executeMessageFromHandlers(commandHandlers.get("createReport").handle(data ,user));
+                break;
             case "leaderPanel":
             case "adminPanel":
                 sendKeyboard(user.getTgId(), keyboardService.getKeyboardMarkup(user.getTgId(), true));
@@ -152,22 +166,21 @@ public class TGBot extends TelegramLongPollingBot {
             case String order when order.startsWith("ORDER_"):
                 executeMessageFromHandlers(commandHandlers.get("createOrder").handle(data, user));
                 break;
-            case String order when order.startsWith("ORDER_"):
-                executeMessageFromHandlers(commandHandlers.get("getOrder").handle(data, user));
-                break;
             case "backToMain":
                 telegramBaseService.updateUserState(user.getTgId(), State.NO);
                 tempStorageManager.clearForUser(user.getTgId());
                 sendKeyboard(user.getTgId(), keyboardService.getKeyboardMarkup(user.getTgId(), false));
                 break;
             case "previousPage":
-            case "nextPage":
-                handleState(data, user); //// TODO: доделать проверку отчетов (одобрить, отказать и тд)
+                paginationService.previousPage(user.getTgId());
+                handleState(data, user);
                 break;
-            case "acceptOrder":
-            case "rejectOrder":
-            case "doneOrder":
-                executeMessageFromHandlers(commandHandlers.get("checkOrder").handle(data, user));
+            case "nextPage":
+                paginationService.nextPage(user.getTgId());
+                handleState(data, user);
+                break;
+            case String checkOrder when checkOrder.startsWith("checkOrder"):
+                executeMessageFromHandlers(commandHandlers.get("processOrder").handle(data, user));
                 break;
             default:
             executeMessageFromHandlers(commandHandlers.get(data).handle(data, user));
@@ -175,7 +188,9 @@ public class TGBot extends TelegramLongPollingBot {
     }
 
     public void executeMessageFromHandlers(List<ReplyMessage> messages) {
-
+        if (messages.isEmpty()) {
+            return;
+        }
         for (ReplyMessage mpl : messages) {
             String text = mpl.getText();
             Long chatId = mpl.getChatId();

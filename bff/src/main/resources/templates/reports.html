@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Отчеты</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .report-table {
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .action-link {
+            transition: all 0.2s ease;
+        }
+        .action-link:hover {
+            transform: scale(1.1);
+        }
+        .status-new {
+            border-left: 4px solid #0d6efd;
+            background-color: #e7f1ff;
+        }
+        .status-accepted {
+            border-left: 4px solid #198754;
+            background-color: #d1e7dd;
+        }
+        .status-rejected {
+            border-left: 4px solid #dc3545;
+            background-color: #f8d7da;
+        }
+    </style>
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+<body class="bg-light">
+<div th:replace="~{fragments/header :: header}"></div>
+
+
+
+<div class="container py-5">
+    <h2 class="mb-4 text-primary">Список отчетов</h2>
+
+    <div class="card report-table">
+        <div class="card-header bg-primary text-white">
+            <div class="row fw-bold">
+                <div class="col-1">ID</div>
+                <div class="col-2">Автор</div>
+                <div class="col-2">Тип</div>
+                <div class="col-4">Описание</div>
+                <div class="col-3">Дата загрузки</div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div th:each="report : ${reports}"
+             th:class="'row py-2 border-bottom report-row ' +
+              (${#strings.toUpperCase(report.status)} == 'NEW' ? 'status-new' :
+               (${#strings.toUpperCase(report.status)} == 'ACCEPTED' ? 'status-accepted' :
+                (${#strings.toUpperCase(report.status)} == 'REJECTED' ? 'status-rejected' : 'status-new')))"
+                 th:onclick="|window.location.href='/reports/${report.id}'|">
+                <div class="col-1 align-self-center" th:text="${report.id}">1</div>
+                <div class="col-2 align-self-center" th:text="${report.userName}">Автор</div>
+                <div class="col-2 align-self-center" th:text="${report.type}">Тип</div>
+                <div class="col-4 align-self-center" th:text="${report.desc}">Описание</div>
+                <div class="col-3 align-self-center" th:text="${report.dateOfCreation}">Дата</div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

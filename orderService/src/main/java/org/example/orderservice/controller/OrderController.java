@@ -22,7 +22,7 @@ public class OrderController {
     public ResponseEntity<List<OrderDto>> getAllOrders(@RequestParam Integer page,
                                                        @RequestParam Integer size) {
         List<OrderDto> all = orderService.findAllPage(page, size);
-        return ResponseEntity.ok(all); //// TODO: доделать пагинацию. Подумать как лучше курсор или size+offset
+        return ResponseEntity.ok(all);
     }
 
 

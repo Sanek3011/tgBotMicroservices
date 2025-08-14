@@ -24,4 +24,15 @@ public class IntegerTempStorage implements TempStorage<Integer>{
     public void remove(Long userId) {
         map.remove(userId);
     }
+
+    public void setPage(String action, Long tgId) {
+        Integer tmp = get(tgId).orElse(0);
+        switch (action) {
+            case "nextPage":
+                map.put(tgId, ++tmp);
+                break;
+            case "previousPage":
+                map.put(tgId, Math.max(--tmp, 0));
+        }
+    }
 }

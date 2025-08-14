@@ -8,6 +8,8 @@
         <option value="$PROJECT_DIR$/telegram-gateway/pom.xml" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/orderService/pom.xml" />
+        <option value="$PROJECT_DIR$/reportService/pom.xml" />
+        <option value="$PROJECT_DIR$/bff/pom.xml" />
       </list>
     </option>
   </component>

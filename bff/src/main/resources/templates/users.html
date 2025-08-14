@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Пользователи</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<div class="container mt-4">
+    <h2>Список пользователей</h2>
+    <form th:action="@{/users}" method="get" class="mb-3 row g-2 align-items-center">
+        <div class="col-auto">
+            <input type="text" name="query" th:value="${query}" placeholder="Поиск..." class="form-control"/>
+        </div>
+        <div class="col-auto">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="field" id="searchById" value="id"
+                       th:checked="${field == null or field == 'id'}" />
+                <label class="form-check-label" for="searchById">Id</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="field" id="searchByTg" value="tg"
+                       th:checked="${field == 'tg'}" />
+                <label class="form-check-label" for="searchByTg">Telegram ID</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="field" id="searchByName" value="name"
+                       th:checked="${field == 'name'}" />
+                <label class="form-check-label" for="searchByName">Имя</label>
+            </div>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Поиск</button>
+        </div>
+    </form>
+
+
+
+    <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Имя</th>
+                <th>Telegram ID</th>
+                <th>Роль</th>
+                <th>Очки</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <form th:action="@{/users/update/{id}(id=${user.id})}" method="post">
+                    <td th:text="${user.id}"></td>
+
+                    <!-- Имя -->
+                    <td>
+                        <input type="text" name="name"
+                               th:value="${user.name}"
+                               th:disabled="${!#authorization.expression('hasRole(''ADMIN'')')}"
+                               class="form-control"/>
+                    </td>
+
+                    <!-- Telegram ID -->
+                    <td>
+                        <input type="text" name="telegramId"
+                               th:value="${user.telegramId}"
+                               th:disabled="${!#authorization.expression('hasRole(''ADMIN'')')}"
+                               class="form-control"/>
+                    </td>
+
+                    <!-- Роль -->
+                    <td>
+                        <select name="role" class="form-select">
+                            <option th:each="role : ${T(org.example.model.Role).values()}"
+                                    th:if="${#authorization.expression('hasRole(''ADMIN'')') or
+                                   (#authorization.expression('hasRole(''LEADER'')') and (role.name() == 'GUEST' or role.name() == 'USER'))}"
+                                    th:value="${role}"
+                                    th:text="${role}"
+                                    th:selected="${role == user.role}">
+                            </option>
+                        </select>
+                    </td>
+
+                    <!-- Очки -->
+                    <td>
+                        <input type="number" name="score"
+                               th:value="${user.score}"
+                               th:disabled="${!#authorization.expression('hasRole(''ADMIN'')')}"
+                               class="form-control"/>
+                    </td>
+
+                    <td>
+                        <button type="submit" class="btn btn-success btn-sm">Сохранить</button>
+
+                    </td>
+                </form>
+
+            </tr>
+
+            </tbody>
+        </table>
+
+
+    <!-- Пагинация -->
+    <div>
+        <ul style="list-style: none; padding: 0; display: flex; gap: 5px;">
+            <li th:if="${currentPage > 0}">
+                <a th:href="@{/users(page=${currentPage - 1})}">Prev</a>
+            </li>
+            <li th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${pageNum == currentPage} ? 'active' : ''">
+                <a th:href="@{/users(page=${pageNum})}"
+                   th:text="${pageNum + 1}">1</a>
+            </li>
+            <li th:if="${currentPage < totalPages - 1}">
+                <a th:href="@{/users(page=${currentPage + 1})}">Next</a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

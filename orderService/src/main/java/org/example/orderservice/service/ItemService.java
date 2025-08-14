@@ -23,7 +23,7 @@ public class ItemService {
     }
 
     public Item getItemByName(String name) {
-        return itemRepository.findByType(name);
+        return itemRepository.findByType(name).orElse(null);
     }
 
 

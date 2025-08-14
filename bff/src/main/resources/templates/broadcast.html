@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Массовая рассылка по ролям</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background: #f1f3f5;
+        }
+        .container {
+            max-width: 600px;
+            margin-top: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgb(0 0 0 / 0.1);
+        }
+        .roles-checkbox {
+            margin-bottom: 1rem;
+        }
+        textarea {
+            resize: vertical;
+        }
+        .telegram-id-field {
+            margin-top: 1rem;
+        }
+        .form-label strong {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<div class="container">
+    <h2 class="mb-4 text-primary">Массовая рассылка сообщений по ролям</h2>
+
+    <form id="broadcastForm" th:action="@{/users/broadcast}" method="post" onsubmit="return validateAndConfirm(event)">
+        <div class="mb-3">
+            <label class="form-label fw-semibold"><strong>Выберите роли для рассылки:</strong></label>
+            <div class="form-check roles-checkbox">
+                <input class="form-check-input" type="checkbox" id="role-admins" name="roles" value="ADMIN" />
+                <label class="form-check-label" for="role-admins">Admins</label>
+            </div>
+            <div class="form-check roles-checkbox">
+                <input class="form-check-input" type="checkbox" id="role-leaders" name="roles" value="LEADER" />
+                <label class="form-check-label" for="role-leaders">Leaders</label>
+            </div>
+            <div class="form-check roles-checkbox">
+                <input class="form-check-input" type="checkbox" id="role-users" name="roles" value="USER" />
+                <label class="form-check-label" for="role-users">Users</label>
+            </div>
+            <div class="form-check roles-checkbox">
+                <input class="form-check-input" type="checkbox" id="role-guests" name="roles" value="GUEST" />
+                <label class="form-check-label" for="role-guests">Guests</label>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="message" class="form-label fw-semibold"><strong>Сообщение:</strong></label>
+            <textarea class="form-control" id="message" name="message" rows="5" placeholder="Введите текст сообщения..."></textarea>
+        </div>
+
+        <div class="mb-3 telegram-id-field">
+            <label for="telegramId" class="form-label fw-semibold"><strong>Отправить конкретному пользователю по Telegram ID (необязательно):</strong></label>
+            <input type="text" class="form-control" id="telegramId" name="telegramId" placeholder="Введите Telegram ID" />
+            <div class="form-text">Если заполнено, сообщение отправится только этому пользователю, игнорируя выбранные роли.</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
+</div>
+
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger" id="confirmModalLabel">Подтверждение отправки</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                Вы действительно хотите отправить сообщение выбранным пользователям?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                <button type="button" id="confirmSendBtn" class="btn btn-danger">Да, отправить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const broadcastForm = document.getElementById('broadcastForm');
+
+    function validateAndConfirm(event) {
+        event.preventDefault();
+
+        const rolesChecked = broadcastForm.querySelectorAll('input[name="roles"]:checked');
+        const message = broadcastForm.querySelector('textarea[name="message"]').value.trim();
+        const telegramId = broadcastForm.querySelector('input[name="telegramId"]').value.trim();
+
+        if (!telegramId && rolesChecked.length === 0) {
+            alert('Пожалуйста, выберите хотя бы одну роль или укажите Telegram ID пользователя.');
+            return false;
+        }
+
+        if (!message) {
+            alert('Введите сообщение для отправки.');
+            return false;
+        }
+
+        confirmModal.show();
+        return false;
+    }
+
+    document.getElementById('confirmSendBtn').addEventListener('click', () => {
+        confirmModal.hide();
+        broadcastForm.submit();
+    });
+</script>
+
+</body>
+</html>

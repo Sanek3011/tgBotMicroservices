@@ -6,7 +6,9 @@ import org.example.entity.TelegramUser;
 import org.example.entity.dto.ItemDto;
 import org.example.entity.util.ReplyMessage;
 import org.example.service.KeyboardService;
-import org.example.service.OutputService;
+
+import org.example.service.output.OrdersOutputService;
+import org.example.service.output.UserOutputService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -16,7 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class InformationCommandHandler implements CommandHandler {
 
-    private final OutputService outputService;
+    private final OrdersOutputService ordersOutputService;
+    private final UserOutputService userOutputService;
     private final KeyboardService keyboardService;
     @Override
     public List<ReplyMessage> handle(String data, TelegramUser user) {
@@ -31,7 +34,7 @@ public class InformationCommandHandler implements CommandHandler {
                         .keyboard(null).build();
                 return List.of(message);
             case "shop":
-                List<ItemDto> allItems = outputService.getAllItems();
+                List<ItemDto> allItems = ordersOutputService.getAllItems();
                 if (allItems == null) {
                     return List.of(new ReplyMessage(user.getTgId(), "Товары не найдены", null));
                 }
@@ -52,14 +55,14 @@ public class InformationCommandHandler implements CommandHandler {
         }
         sb.append("--------------------------------\n");
         sb.append("Информация об аккаунте:\n");
-        Integer score = outputService.getScoreFromUserService(user.getTgId().toString(), false).orElse(0);
+        Integer score = userOutputService.getScoreFromUserService(user.getTgId().toString(), false).orElse(0);
         sb.append("Количество баллов: ").append(score + "\n");
         return sb.toString();
     }
 
     private String getShopInfo(TelegramUser user, List<ItemDto> allItems) {
 
-        Integer score = outputService.getScoreFromUserService(user.getTgId().toString(), false).orElse(0);
+        Integer score = userOutputService.getScoreFromUserService(user.getTgId().toString(), false).orElse(0);
         StringBuilder sb = new StringBuilder();
         sb.append("Ваши баллы:").append(score).append("\n");
         sb.append("--------------------------------\n");

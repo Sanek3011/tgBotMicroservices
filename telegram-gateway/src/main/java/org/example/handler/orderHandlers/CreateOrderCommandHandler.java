@@ -1,6 +1,7 @@
 package org.example.handler.orderHandlers;
 
 import lombok.RequiredArgsConstructor;
+import org.example.entity.Role;
 import org.example.entity.TelegramUser;
 import org.example.entity.util.ReplyMessage;
 import org.example.handler.CommandHandler;
@@ -24,7 +25,9 @@ public class CreateOrderCommandHandler implements CommandHandler {
 
     @Override
     public List<ReplyMessage> handle(String update, TelegramUser user) {
-
+        if (user.getRole().equals(Role.GUEST)) {
+            return List.of(new ReplyMessage(user.getTgId(), "НЕТ ДОСТУПА.", null));
+        }
         String item = update.substring(6);
         OrderRequestedEvent event = new OrderRequestedEvent(UUID.randomUUID(), item, user.getTgId());
         orderProducer.sendRequestOrder(event);

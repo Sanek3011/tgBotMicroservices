@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Управление товарами</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="container mt-5">
+    <h2 class="mb-4">📦 Список товаров</h2>
+
+    <table class="table table-bordered table-hover bg-white shadow-sm">
+        <thead class="table-dark text-center">
+        <tr>
+            <th>Описание</th>
+            <th>Стоимость</th>
+            <th colspan="2">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item : ${items}">
+            <form th:action="@{/admin/shop/edit/{id}(id=${item.id})}" method="post" class="align-middle">
+                <input type="hidden" name="id" th:value="${item.id}" />
+                <input type="hidden" name="type" th:value="${item.type}" />
+                <td>
+                    <input type="text" name="desc" class="form-control" th:value="${item.desc}" required />
+                </td>
+                <td>
+                    <input type="number" name="price" class="form-control" th:value="${item.price}" step="1" required />
+                </td>
+                <td class="text-center">
+                    <button type="submit" class="btn btn-sm btn-primary">💾 Сохранить</button>
+                </td>
+            </form>
+            <td class="text-center">
+                <form th:action="@{/admin/shop/delete/{id}(id=${item.id})}" method="post" onsubmit="return confirm('Удалить товар?')">
+                    <input type="hidden" name="id" th:value="${item.id}" />
+                    <button type="submit" class="btn btn-sm btn-danger">🗑 Удалить</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <hr class="my-4"/>
+
+    <h4>➕ Добавить новый товар</h4>
+    <form th:action="@{/admin/shop/create}" method="post" class="row g-3 mt-2">
+        <div class="col-md-3">
+            <input type="text" name="type" class="form-control" placeholder="Тип заказа" required />
+        </div>
+        <div class="col-md-4">
+            <input type="text" name="desc" class="form-control" placeholder="Описание" required />
+        </div>
+        <div class="col-md-3">
+            <input type="number" name="price" class="form-control" placeholder="Стоимость" step="0.01" required />
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-success w-100">Добавить</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

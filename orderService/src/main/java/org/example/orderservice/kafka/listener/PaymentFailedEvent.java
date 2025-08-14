@@ -17,6 +17,6 @@ public class PaymentFailedEvent {
                     "spring.json.value.default.type=org.example.orderservice.kafka.events.PaymentEvent",
             })
     public void acceptOrder(PaymentEvent event) {
-        orderService.orderProcessFailed(event);
+        orderService.orderPaymentFailed(event);
     }
 }

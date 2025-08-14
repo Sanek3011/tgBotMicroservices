@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Детали заказа</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .order-container {
+            max-width: 800px;
+            margin: 3rem auto;
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 2rem 3rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        }
+
+        .order-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .order-info th {
+            width: 200px;
+            font-weight: 600;
+        }
+
+        .status-actions form {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        .btn-status {
+            min-width: 120px;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+
+<div class="container">
+    <div class="order-container">
+        <h2 class="order-header">Информация о заказе</h2>
+
+        <table class="table table-borderless order-info">
+            <tr>
+                <th>ID заказа:</th>
+                <td th:text="${order.id}">1</td>
+            </tr>
+            <tr>
+                <th>Заказ:</th>
+                <td th:text="${order.itemDesc}">Описание товара</td>
+            </tr>
+            <tr>
+                <th>Пользователь:</th>
+                <td th:text="${order.userName}">Имя пользователя</td>
+            </tr>
+            <tr>
+                <th>ID пользователя:</th>
+                <td th:text="${order.userId}">10</td>
+            </tr>
+            <tr>
+                <th>Дата создания:</th>
+                <td th:text="${#temporals.format(order.date, 'dd.MM.yyyy HH:mm')}">31.05.2025</td>
+            </tr>
+            <tr>
+                <th>Статус:</th>
+                <td th:text="${order.status}">NEW</td>
+            </tr>
+        </table>
+
+
+        <div class="status-actions text-center mt-4">
+            <div th:if="${order.status.name() != 'DONE' and order.status.name() != 'REJECTED'}">
+            <form th:action="@{/admin/orders/{id}(id=${order.id})}" method="post">
+                <input type="hidden" name="status" value="ACCEPTED"/>
+                <button type="submit" class="btn btn-outline-success btn-status">Принять</button>
+            </form>
+            <form th:action="@{/admin/orders/{id}(id=${order.id})}" method="post">
+                <input type="hidden" name="status" value="REJECTED"/>
+                <button type="submit" class="btn btn-outline-danger btn-status">Отклонить</button>
+            </form>
+            <form th:action="@{/admin/orders/{id}(id=${order.id})}" method="post">
+                <input type="hidden" name="status" value="DONE"/>
+                <button type="submit" class="btn btn-outline-primary btn-status">Завершить</button>
+            </form>
+                <form th:action="@{/admin/orders}" method="get">
+                    <button type="submit" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Назад
+                    </button>
+                </form>
+                </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

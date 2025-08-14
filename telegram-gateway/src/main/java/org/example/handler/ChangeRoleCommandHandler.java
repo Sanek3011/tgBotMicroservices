@@ -27,6 +27,9 @@ public class ChangeRoleCommandHandler implements CommandHandler {
 
     @Override
     public List<ReplyMessage> handle(String update, TelegramUser user) {
+        if (!user.getRole().equals(Role.ADMIN)) {
+            return List.of(new ReplyMessage(user.getTgId(), "НЕТ ДОСТУПА.", null));
+        }
         Long chatId = user.getTgId();
         String[] split = update.split(" ");
         if (split.length != 2) {

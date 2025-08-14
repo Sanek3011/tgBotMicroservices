@@ -9,6 +9,9 @@ import org.example.userservice.kafka.producer.NotificationProducer;
 import org.example.userservice.kafka.producer.PaymentFailedProducer;
 import org.example.userservice.kafka.producer.PaymentSuccessProducer;
 import org.example.userservice.repository.UserRepository;
+import org.example.userservice.service.notification.NotificationRequest;
+import org.example.userservice.service.notification.NotificationSender;
+import org.example.userservice.util.NotificationRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +22,7 @@ import java.util.UUID;
 public class PaymentService {
 
     private final UserRepository userRepository;
-    private final NotificationProducer notificationProducer;
+    private final NotificationSender notificationService;
     private final PaymentFailedProducer failedProducer;
     private final PaymentSuccessProducer successProducer;
 
@@ -29,7 +32,7 @@ public class PaymentService {
         User user = userRepository.findByTelegramId(event.getTgId()).orElseThrow();
         PaymentEvent paymentEvent = new PaymentEvent(UUID.randomUUID(), user.getId(), event.getOrderId());
         if (user.getScore() < event.getPrice()) {
-            notificationProducer.sendNotification(new NotificationEvent(UUID.randomUUID(), event.getTgId(), "Недостаточно баллов"));
+            notificationService.sendNotification(NotificationRequestFactory.notificationForTgId(event.getTgId(), "Недостаточно баллов"));
             failedProducer.sendPaymentEvent(paymentEvent);
             return;
         }

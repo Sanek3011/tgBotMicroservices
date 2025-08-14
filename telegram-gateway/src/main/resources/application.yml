@@ -26,6 +26,7 @@ spring:
 services-rest:
   user-service-url: http://localhost:8081/api/v1/
   order-service-url: http://localhost:8083/api/v1/
+  report-service-url: http://localhost:8084/api/v1/
 
 telegram:
   bot:

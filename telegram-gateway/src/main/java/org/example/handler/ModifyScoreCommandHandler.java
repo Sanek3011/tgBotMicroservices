@@ -7,8 +7,8 @@ import org.example.entity.TelegramUser;
 import org.example.entity.util.ReplyMessage;
 import org.example.kafka.events.UserUpdateEvent;
 import org.example.kafka.producer.UpdateUserProducer;
-import org.example.service.OutputService;
 import org.example.service.TelegramBaseService;
+import org.example.service.output.UserOutputService;
 import org.example.tempStorage.StringTempStorage;
 import org.example.tempStorage.TempStorage;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ public class ModifyScoreCommandHandler implements CommandHandler {
 
     private final TelegramBaseService service;
     private final TempStorage<String> tempStorage;
-    private final OutputService outputService;
+    private final UserOutputService userOutputService;
     private final UpdateUserProducer updateUserProducer;
 
 
@@ -43,7 +43,7 @@ public class ModifyScoreCommandHandler implements CommandHandler {
                 service.updateUserState(user.getTgId(), State.WAITING_NICKSCORE);
                 return List.of(new ReplyMessage(user.getTgId(), "Введите ник, кому Вы хотите изменить очки", null));
             case WAITING_NICKSCORE:
-                Optional<Integer> scoreFromUserService = outputService.getScoreFromUserService(update, true);
+                Optional<Integer> scoreFromUserService = userOutputService.getScoreFromUserService(update, true);
                 if (scoreFromUserService.isEmpty()) {
                     return List.of(new ReplyMessage(user.getTgId(), "Пользователь не найден. Попробуйте снова или введите /quit", null));
                 }

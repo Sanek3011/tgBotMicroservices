@@ -2,9 +2,9 @@ package org.example.entity;
 
 public enum State {
     NO,
-    TYPE_DONE,
-    DESCRIPTION_DONE,
-    IMG_DONE,
+    WAITING_TYPE,
+    WAITING_DESCRIPTION,
+    WAITING_IMG,
 
     WAITING_NICKDATA,
     WAITING_DELETE,

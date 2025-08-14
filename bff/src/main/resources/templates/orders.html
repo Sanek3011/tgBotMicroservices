@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Заказы</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .order-table {
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .status-new {
+            border-left: 4px solid #0d6efd;
+            background-color: #e7f1ff;
+        }
+
+        .status-accepted {
+            border-left: 4px solid #198754;
+            background-color: #d1e7dd;
+        }
+
+        .status-rejected {
+            border-left: 4px solid #dc3545;
+            background-color: #f8d7da;
+        }
+
+        .status-done {
+            border-left: 4px solid #6c757d;
+            background-color: #e2e3e5;
+        }
+
+        .order-row:hover {
+            cursor: pointer;
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body class="bg-light">
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="container py-5">
+    <h2 class="mb-4 text-primary">Список заказов</h2>
+
+    <div class="card order-table">
+        <div class="card-header bg-primary text-white fw-bold">
+            <div class="row">
+                <div class="col-1">ID</div>
+                <div class="col-3">Товар</div>
+                <div class="col-3">Пользователь</div>
+                <div class="col-3">Дата</div>
+                <div class="col-2">Статус</div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div th:each="order : ${orders}"
+                 th:class="'row py-2 border-bottom order-row ' +
+                   (${order.status} == 'NEW' ? 'status-new' :
+                    (${order.status} == 'ACCEPTED' ? 'status-accepted' :
+                     (${order.status} == 'REJECTED' ? 'status-rejected' :
+                      (${order.status} == 'DONE' ? 'status-done' : ''))))"
+                 th:onclick="|window.location.href='/admin/orders/${order.id}'|">
+                <div class="col-1 align-self-center" th:text="${order.id}">1</div>
+                <div class="col-3 align-self-center" th:text="${order.itemDesc}">Товар</div>
+                <div class="col-3 align-self-center" th:text="${order.userName}">Пользователь</div>
+                <div class="col-3 align-self-center" th:text="${#temporals.format(order.date, 'dd.MM.yyyy HH:mm')}">Дата</div>
+                <div class="col-2 align-self-center fw-semibold text-uppercase" th:text="${order.status}">Статус</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

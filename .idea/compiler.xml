@@ -10,16 +10,20 @@
         <processorPath useClasspath="false">
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
         </processorPath>
+        <module name="reportService" />
+        <module name="bff" />
+        <module name="telegram-gateway" />
         <module name="UserService" />
         <module name="orderService" />
-        <module name="telegram-gateway" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="UserService" options="-parameters" />
+      <module name="bff" options="-parameters" />
       <module name="orderService" options="-parameters" />
+      <module name="reportService" options="-parameters" />
       <module name="telegram-gateway" options="-parameters" />
     </option>
   </component>

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class PaymentSuccessProducer {
+public class PaymentSuccessProducer implements PaymentProducer {
 
     private final KafkaTemplate<String, PaymentEvent> kafkaTemplate;
     public static final String TOPIC = "user.payment.success";

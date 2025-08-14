@@ -42,8 +42,9 @@ public class OrderService {
 
 
 
-    public void saveOrder(Order order) {
-        orderRepository.save(order);
+    public Long saveOrder(Order order) {
+        Order save = orderRepository.save(order);
+        return save.getId();
     }
 
     public Order findById(Long id) {

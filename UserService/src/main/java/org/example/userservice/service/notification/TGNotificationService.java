@@ -1,4 +1,4 @@
-package org.example.userservice.service;
+package org.example.userservice.service.notification;
 
 import lombok.RequiredArgsConstructor;
 import org.example.userservice.kafka.events.NotificationEvent;
@@ -11,12 +11,18 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class NotificationService {
+public class TGNotificationService implements NotificationSender {
 
     private final NotificationProducer producer;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void sendNotification(Long chatId, String message) {
-        producer.sendNotification(new NotificationEvent(UUID.randomUUID() ,chatId, message));
+    @Override
+    public void sendNotification(NotificationRequest notificationRequest) {
+        producer.sendNotification(NotificationEvent
+                .builder()
+                .id(UUID.randomUUID())
+                .tgId(notificationRequest.getTgId())
+                .message(notificationRequest.getMessage())
+                .build());
     }
 }

@@ -16,8 +16,4 @@ public class OrderDto {
     String itemDesc;
     LocalDateTime date;
 
-    @Override
-    public String toString() {
-        return String.format("id: %d Заказчик: %s, заказ: %s, дата заказа: %s", id, name, itemDesc, date);
-    }
 }
