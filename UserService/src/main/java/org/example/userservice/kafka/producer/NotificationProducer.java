@@ -5,6 +5,8 @@ import org.example.userservice.kafka.events.NotificationEvent;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class NotificationProducer {
@@ -13,7 +15,7 @@ public class NotificationProducer {
     public static final String TOPIC = "notification";
 
     public void sendNotification (NotificationEvent event) {
-        kafkaTemplate.send(TOPIC, event.getTgId().toString(), event);
+        kafkaTemplate.send(TOPIC, UUID.randomUUID().toString(), event);
     }
 
 

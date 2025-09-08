@@ -1,13 +1,16 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5434/orderservicedb
-    username: postgres
-    password: postgres777!
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5434/orderservicedb}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres777!}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: validate
     show-sql: true
+  liquibase:
+    change-log: 07-01-changelog.yaml
+    enabled: true
 
   kafka:
     bootstrap-servers: localhost:9092
@@ -23,6 +26,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
+service-token: ${secret-token:999d6327-1b80-4ce4-8e15-b51a21ec912d}
 
 
 logging:

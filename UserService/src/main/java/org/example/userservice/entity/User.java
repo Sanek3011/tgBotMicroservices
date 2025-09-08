@@ -26,12 +26,8 @@ public class User {
     Long telegramId;
     @Enumerated(EnumType.STRING)
     Role role;
-//    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-//    List<Report> reports;
     @Column(name = "score")
     Integer score;
-//    @Enumerated(EnumType.STRING)
-//    State state;
     @Column(name = "token")
     String token;
     @Column(name = "expires_at")

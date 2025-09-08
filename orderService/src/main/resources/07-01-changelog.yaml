@@ -1,0 +1,70 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1757200680547-1
+      author: alex
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_orders
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: item_id
+                  type: INT
+              - column:
+                  name: user_id
+                  type: BIGINT
+              - column:
+                  name: data
+                  type: DATETIME
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+            schemaName: public
+            tableName: orders
+  - changeSet:
+      id: 1757200680547-2
+      author: alex
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_shop_items
+                  name: id
+                  type: INT
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: price
+                  type: INT
+            schemaName: public
+            tableName: shop_items
+  - changeSet:
+      id: 1757200680547-3
+      author: alex
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: item_id
+            baseTableName: orders
+            baseTableSchemaName: public
+            constraintName: FK_ORDERS_ON_ITEM
+            referencedColumnNames: id
+            referencedTableName: shop_items
+            referencedTableSchemaName: public
+

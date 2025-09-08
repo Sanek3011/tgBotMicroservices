@@ -28,15 +28,39 @@ public class ReportService {
         return ReportTgDto.toDtoList(reportList);
     }
 
+    public List<ReportAdminTgDto> getReportsByUserIdExtra (Long userId) {
+        List<Report> reportList = repository.findByUserIdOrderByDateOfCreationDesc(userId);
+        return ReportAdminTgDto.toDtoList(reportList);
+    }
+
 
     public List<ReportAdminTgDto> getAllUserReports(Integer size, Integer page) {
         List<Report> reportList = repository.findAll(PageRequest.of(page, size).withSort(Sort.by("dateOfCreation").descending())).getContent();
         return ReportAdminTgDto.toDtoList(reportList);
     }
 
-    public void save(Report report) {
+    public void save(Report report, boolean update) {
         repository.save(report);
-        notificationSender.sendNotification(new NotificationRequest(report.getUserId(), "Ваш отчет успешно сохранен."));
+        if (update) {
+            notificationSender.sendNotification(new NotificationRequest(report.getUserId(), String.format("Статус вашего отчета id: %d изменен на %s", report.getId(), report.getStatus().toString())));
+
+        }else {
+            notificationSender.sendNotification(new NotificationRequest(report.getUserId(), "Ваш отчет успешно сохранен."));
+        }
+    }
+
+    public List<ReportAdminTgDto> getAllReports() {
+        List<Report> all = repository.findAll();
+        return ReportAdminTgDto.toDtoList(all);
+    }
+
+    public ReportAdminTgDto findByReportId(Long reportId) {
+        Report report = repository.findById(reportId).orElseThrow();
+        return ReportAdminTgDto.toDto(report);
+    }
+
+    public Report findReportById(Long reportId) {
+        return repository.findById(reportId).orElseThrow();
     }
 
 }

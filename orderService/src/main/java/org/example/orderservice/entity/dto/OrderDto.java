@@ -15,4 +15,5 @@ public class OrderDto {
     Long userId;
     String itemDesc;
     LocalDateTime date;
+    String status;
 }

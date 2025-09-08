@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+
     <meta charset="UTF-8">
     <title>Администрирование отчетов</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -34,19 +33,19 @@
                 <span class="ms-2" th:text="${report.dateOfCreation}">2025-05-24</span>
             </div>
 
-            <span th:if="${report.status.name() == 'ACCEPTED'}"
+            <span th:if="${report.status == 'ACCEPTED'}"
                   class="me-2 text-success"
-                  th:text="|Статус: ${report.status.name()}|">
+                  th:text="|Статус: ${report.status}|">
         </span>
 
-            <span th:if="${report.status.name() == 'REJECTED'}"
+            <span th:if="${report.status == 'REJECTED'}"
                   class="me-2 text-danger"
-                  th:text="|Статус: ${report.status.name()}|">
+                  th:text="|Статус: ${report.status}|">
         </span>
 
-            <span th:if="${report.status.name() != 'ACCEPTED' and report.status.name() != 'REJECTED'}"
+            <span th:if="${report.status != 'ACCEPTED' and report.status != 'REJECTED'}"
                   class="me-2 text-secondary"
-                  th:text="|Статус: ${report.status.name()}|">
+                  th:text="|Статус: ${report.status}|">
         </span>
         </div>
 
@@ -65,27 +64,27 @@
         </div>
 
         <div class="card-footer d-flex justify-content-between align-items-center">
-            <div sec:authorize="hasAnyRole('ROLE_LEADER', 'ROLE_ADMIN')">
-                <form th:action="@{'/reports/' + ${report.id}}" method="post" class="d-inline">
-                    <input type="hidden" name="action" value="approve"/>
+            <div th:if="${roles.isAdmin or roles.isLeader}">
+                <form th:action="@{'/reports/' + ${report.id}}" method="post" class="d-inline" enctype="application/x-www-form-urlencoded">
+                    <input type="hidden" name="action" value="accepted"/>
                     <button type="submit" class="btn btn-success me-2">
                         <i class="bi bi-check-circle"></i> Одобрить
                     </button>
                 </form>
-                <form th:action="@{'/reports/' + ${report.id}}" method="post" class="d-inline">
-                    <input type="hidden" name="action" value="reject"/>
+                <form th:action="@{'/reports/' + ${report.id}}" method="post" class="d-inline" enctype="application/x-www-form-urlencoded">
+                    <input type="hidden" name="action" value="rejected"/>
                     <button type="submit" class="btn btn-danger">
                         <i class="bi bi-x-circle"></i> Отклонить
                     </button>
                 </form>
             </div>
-            <form th:action="@{/reports/myReports}" method="get" sec:authorize="hasRole('ROLE_USER')">
+            <form th:action="@{/reports/myReports}" method="get" th:if="${roles.isUser}">
                 <button type="submit" class="btn btn-secondary">
                     <i class="bi bi-arrow-left"></i> Назад
                 </button>
             </form>
 
-            <form th:action="@{/reports}" method="get" sec:authorize="hasAnyRole('ROLE_LEADER', 'ROLE_ADMIN')">
+            <form th:action="@{/reports}" method="get" th:if="${roles.isAdmin or roles.isLeader}">
                 <button type="submit" class="btn btn-secondary">
                     <i class="bi bi-arrow-left"></i> Назад
                 </button>

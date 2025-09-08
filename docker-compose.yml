@@ -1,0 +1,147 @@
+services:
+  userservice:
+    build:
+      context: UserService
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://userService-db:5432/userservicedb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres777!
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      secret-token: 999d6327-1b80-4ce4-8e15-b51a21ec912d
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8081/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    depends_on:
+      - userService-db
+      - kafka
+
+  telegram-gateway:
+    build:
+      context: telegram-gateway
+      dockerfile: Dockerfile
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      TELEGRAM_BOT_USERNAME: microbot
+      TELEGRAM_BOT_TOKEN: 8142733256:AAGVAhvQ2yGF3do6yfsy-re3FzPotWmSfqY
+      secret-token: 999d6327-1b80-4ce4-8e15-b51a21ec912d
+      user-service: http://userservice:8081/api/v1/
+      order-service: http://orderservice:8083/api/v1/
+      report-service: http://reportservice:8084/api/v2/
+      FRONT_URL: http://localhost:8085/login?t=
+    depends_on:
+      userservice:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+
+  bff:
+    build:
+      context: bff
+      dockerfile: Dockerfile
+    environment:
+      secret-token: 999d6327-1b80-4ce4-8e15-b51a21ec912d
+      user-service: http://userservice:8081/api/v1/
+      order-service: http://orderservice:8083/api/v1/
+      report-service: http://reportservice:8084/api/v2/
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    ports:
+      - "8085:8085"
+
+  reportservice:
+    build:
+      context: reportService
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://reportservice-db:5432/reportservicedb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres777!
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      secret-token: 999d6327-1b80-4ce4-8e15-b51a21ec912d
+    depends_on:
+      - reportService-db
+
+  orderservice:
+    build:
+      context: orderService
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://orderservice-db:5432/reportservicedb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres777!
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      secret-token: 999d6327-1b80-4ce4-8e15-b51a21ec912d
+    depends_on:
+      - orderservice-db
+
+  orderservice-db:
+    image: postgres:latest
+    container_name: orderService-db
+    volumes:
+      - orderservice-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: reportservicedb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres777!
+    ports:
+      - "5435:5432"
+
+
+
+  reportService-db:
+    image: postgres:latest
+    container_name: reportService-db
+    volumes:
+      - reportservice-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: reportservicedb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres777!
+    ports:
+      - "5433:5432"
+
+
+
+  userService-db:
+    image: postgres:latest
+    container_name: userService-db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: userservicedb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres777!
+    ports:
+      - "5434:5432"
+
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.4
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+volumes:
+  postgres-data:
+  reportservice-data:
+  orderservice-data:
+

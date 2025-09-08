@@ -38,6 +38,7 @@ public class GetMyReportsCommandHandler implements CommandHandler {
                 break;
             }
             sb.append(ReportDtoFormatter.format(dto));
+            sb.append("----------------------------\n");
         }
         return List.of(new ReplyMessage(user.getTgId(), sb.toString(), null));
     }

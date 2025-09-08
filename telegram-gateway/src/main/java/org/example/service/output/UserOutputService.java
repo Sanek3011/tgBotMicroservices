@@ -1,6 +1,8 @@
 package org.example.service.output;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.entity.dto.UserDto;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -12,30 +14,44 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Slf4j
 public class UserOutputService {
-    private final RestTemplate restTemplate;
-    private final String userServiceApiUrl;
 
-    public UserOutputService(RestTemplate restTemplate, @Value("${services-rest.user-service-url}") String userServiceApiUrl) {
+    private final RestTemplate restTemplate;
+
+
+    public UserOutputService(@Qualifier("userService") RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.userServiceApiUrl = userServiceApiUrl;
+
+    }
+
+    public Long getCountUsers() {
+        return restTemplate.getForObject("/users/count", Long.class);
+    }
+
+    public List<UserDto> getAllUsers() {
+        try {
+            ResponseEntity<List<UserDto>> exchange = restTemplate.exchange(
+                    "/users/tg",
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<List<UserDto>>() {
+                    }
+            );
+            return exchange.getBody();
+        }catch (RestClientException e) {
+            return List.of();
+        }
     }
 
     public Map<Long, String> getNamesById(Set<Long> ids) {
-        String url = UriComponentsBuilder.fromUriString(userServiceApiUrl)
-                .path("/users/names")
-                .toUriString();
         try {
             HttpEntity<Set<Long>> setHttpEntity = new HttpEntity<>(ids);
             ResponseEntity<Map<Long, String>> exchange = restTemplate.exchange(
-                    url,
+                    "/users/names",
                     HttpMethod.POST,
                     setHttpEntity,
                     new ParameterizedTypeReference<Map<Long, String>>() {
@@ -53,9 +69,9 @@ public class UserOutputService {
     public Optional<Integer> getScoreFromUserService(String param, boolean isByName) {
         String baseUrl;
         if (isByName) {
-            baseUrl = userServiceApiUrl+"balance?name="+param;
+            baseUrl = "balance?name="+param;
         }else{
-            baseUrl = userServiceApiUrl+"balance/"+param;
+            baseUrl = "balance/"+param;
         }
         try {
 

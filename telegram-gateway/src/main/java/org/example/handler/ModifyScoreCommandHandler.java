@@ -57,7 +57,8 @@ public class ModifyScoreCommandHandler implements CommandHandler {
                             .initiatorTgId(user.getTgId())
                             .eventId(UUID.randomUUID())
                             .name(tempStorage.get(user.getTgId()).get())
-                            .score(action).build();
+                            .score(action)
+                            .build();
                     updateUserProducer.sendUpdate(event);
                     service.updateUserState(user.getTgId(), State.NO);
                     tempStorage.remove(user.getTgId());

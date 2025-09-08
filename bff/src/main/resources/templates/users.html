@@ -10,31 +10,33 @@
 <div th:replace="~{fragments/header :: header}"></div>
 <div class="container mt-4">
     <h2>Список пользователей</h2>
-    <form th:action="@{/users}" method="get" class="mb-3 row g-2 align-items-center">
-        <div class="col-auto">
-            <input type="text" name="query" th:value="${query}" placeholder="Поиск..." class="form-control"/>
-        </div>
-        <div class="col-auto">
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="field" id="searchById" value="id"
-                       th:checked="${field == null or field == 'id'}" />
-                <label class="form-check-label" for="searchById">Id</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="field" id="searchByTg" value="tg"
-                       th:checked="${field == 'tg'}" />
-                <label class="form-check-label" for="searchByTg">Telegram ID</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="field" id="searchByName" value="name"
-                       th:checked="${field == 'name'}" />
-                <label class="form-check-label" for="searchByName">Имя</label>
-            </div>
-        </div>
-        <div class="col-auto">
-            <button type="submit" class="btn btn-primary">Поиск</button>
-        </div>
-    </form>
+    <h6>Всего пользователей:
+    <span th:text="${users.size()}"></span></h6>
+<!--    <form th:action="@{/users}" method="get" class="mb-3 row g-2 align-items-center">-->
+<!--        <div class="col-auto">-->
+<!--            <input type="text" name="query" th:value="${query}" placeholder="Поиск..." class="form-control"/>-->
+<!--        </div>-->
+<!--        <div class="col-auto">-->
+<!--            <div class="form-check form-check-inline">-->
+<!--                <input class="form-check-input" type="radio" name="field" id="searchById" value="id"-->
+<!--                       th:checked="${field == null or field == 'id'}" />-->
+<!--                <label class="form-check-label" for="searchById">Id</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--                <input class="form-check-input" type="radio" name="field" id="searchByTg" value="tg"-->
+<!--                       th:checked="${field == 'tg'}" />-->
+<!--                <label class="form-check-label" for="searchByTg">Telegram ID</label>-->
+<!--            </div>-->
+<!--            <div class="form-check form-check-inline">-->
+<!--                <input class="form-check-input" type="radio" name="field" id="searchByName" value="name"-->
+<!--                       th:checked="${field == 'name'}" />-->
+<!--                <label class="form-check-label" for="searchByName">Имя</label>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="col-auto">-->
+<!--            <button type="submit" class="btn btn-primary">Поиск</button>-->
+<!--        </div>-->
+<!--    </form>-->
 
 
 
@@ -58,7 +60,7 @@
                     <td>
                         <input type="text" name="name"
                                th:value="${user.name}"
-                               th:disabled="${!#authorization.expression('hasRole(''ADMIN'')')}"
+                               th:disabled="${!roles.isAdmin}"
                                class="form-control"/>
                     </td>
 
@@ -66,19 +68,18 @@
                     <td>
                         <input type="text" name="telegramId"
                                th:value="${user.telegramId}"
-                               th:disabled="${!#authorization.expression('hasRole(''ADMIN'')')}"
+                               th:disabled="${!roles.isAdmin}"
                                class="form-control"/>
                     </td>
 
                     <!-- Роль -->
                     <td>
                         <select name="role" class="form-select">
-                            <option th:each="role : ${T(org.example.model.Role).values()}"
-                                    th:if="${#authorization.expression('hasRole(''ADMIN'')') or
-                                   (#authorization.expression('hasRole(''LEADER'')') and (role.name() == 'GUEST' or role.name() == 'USER'))}"
-                                    th:value="${role}"
-                                    th:text="${role}"
-                                    th:selected="${role == user.role}">
+                            <option th:each="rolee : ${roless}"
+                                    th:if="${roles.isAdmin or (roles.isLeader and (role.isGuest or role.isUser))}"
+                                    th:value="${rolee}"
+                                    th:text="${rolee}"
+                                    th:selected="${rolee == user.role}">
                             </option>
                         </select>
                     </td>
@@ -87,7 +88,7 @@
                     <td>
                         <input type="number" name="score"
                                th:value="${user.score}"
-                               th:disabled="${!#authorization.expression('hasRole(''ADMIN'')')}"
+                               th:disabled="${!roles.isAdmin}"
                                class="form-control"/>
                     </td>
 
@@ -104,21 +105,21 @@
 
 
     <!-- Пагинация -->
-    <div>
-        <ul style="list-style: none; padding: 0; display: flex; gap: 5px;">
-            <li th:if="${currentPage > 0}">
-                <a th:href="@{/users(page=${currentPage - 1})}">Prev</a>
-            </li>
-            <li th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
-                th:classappend="${pageNum == currentPage} ? 'active' : ''">
-                <a th:href="@{/users(page=${pageNum})}"
-                   th:text="${pageNum + 1}">1</a>
-            </li>
-            <li th:if="${currentPage < totalPages - 1}">
-                <a th:href="@{/users(page=${currentPage + 1})}">Next</a>
-            </li>
-        </ul>
-    </div>
+<!--    <div>-->
+<!--        <ul style="list-style: none; padding: 0; display: flex; gap: 5px;">-->
+<!--            <li th:if="${currentPage > 0}">-->
+<!--                <a th:href="@{/users(page=${currentPage - 1})}">Prev</a>-->
+<!--            </li>-->
+<!--            <li th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"-->
+<!--                th:classappend="${pageNum == currentPage} ? 'active' : ''">-->
+<!--                <a th:href="@{/users(page=${pageNum})}"-->
+<!--                   th:text="${pageNum + 1}">1</a>-->
+<!--            </li>-->
+<!--            <li th:if="${currentPage < totalPages - 1}">-->
+<!--                <a th:href="@{/users(page=${currentPage + 1})}">Next</a>-->
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </div>-->
 </div>
 </body>
 </html>

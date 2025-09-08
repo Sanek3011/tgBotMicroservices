@@ -18,6 +18,9 @@ public class TGNotificationService implements NotificationSender {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Override
     public void sendNotification(NotificationRequest notificationRequest) {
+        if (notificationRequest.getMessage().isEmpty()) {
+            return;
+        }
         producer.sendNotification(NotificationEvent
                 .builder()
                 .id(UUID.randomUUID())

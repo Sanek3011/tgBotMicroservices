@@ -77,7 +77,7 @@
 
 
         <div class="status-actions text-center mt-4">
-            <div th:if="${order.status.name() != 'DONE' and order.status.name() != 'REJECTED'}">
+            <div th:if="${order.status != 'DONE' and order.status != 'REJECTED'}">
             <form th:action="@{/admin/orders/{id}(id=${order.id})}" method="post">
                 <input type="hidden" name="status" value="ACCEPTED"/>
                 <button type="submit" class="btn btn-outline-success btn-status">Принять</button>

@@ -28,7 +28,7 @@
         </thead>
         <tbody>
         <tr th:each="activity : ${reportActivities}">
-            <form th:action="@{/admin/report/edit/{id}(id=${activity.id})}" method="post" class="align-middle">
+            <form th:action="@{'/admin/report/edit/'+${activity.id}}" method="post" class="align-middle">
                 <input type="hidden" name="id" th:value="${activity.id}" />
                 <input type="hidden" name="type" th:value="${activity.type}" />
                 <td>
@@ -50,7 +50,7 @@
                 </td>
             </form>
             <td class="text-center">
-                <form th:action="@{/admin/report/delete/{id}(id=${activity.id})}" method="post" onsubmit="return confirm('Удалить товар?')">
+                <form th:action="@{'/admin/report/delete/'+${activity.id}}" method="post" onsubmit="return confirm('Удалить товар?')">
                     <input type="hidden" name="id" th:value="${activity.id}" />
                     <button type="submit" class="btn btn-sm btn-danger">🗑 Удалить</button>
                 </form>

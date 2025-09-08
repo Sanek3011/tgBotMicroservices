@@ -55,26 +55,24 @@
                         <label for="type" class="form-label">📂 Тип отчета</label>
                         <select id="type" name="type" class="form-select" required onchange="toggleQuantityField()">
                             <option value="" disabled selected>Выберите тип</option>
-                            <option value="SMP">🚑 SMP</option>
-                            <option value="INVITES">🏥 INVITES</option>
-                            <option value="SELL">💰 SELL</option>
-                            <option value="OTHER">😎 OTHER</option>
+                            <option th:each="type : ${types}"
+                                    th:value="${type.type}"
+                                    th:text="${type.description}"
+                                    th:attr="data-coefficient=${type.coefficient}">>
+                            </option>
                         </select>
-                        <input type="number" id="quantity" name="quantity" class="form-control form-control-sm mt-2"
-                               placeholder="Количество инвайтов или продаж. (Должно совпадать с кол-вом скринов)" min="1" disabled />
 
+                        <input type="number"
+                               id="quantity"
+                               name="quantity"
+                               class="form-control form-control-sm mt-2"
+                               placeholder="Количество инвайтов или продаж. (Должно совпадать с кол-вом скринов)"
+                               min="1"
+                               disabled />
                     </div>
-
-
-<!--                    <div class="mb-3">-->
-<!--                        <label for="screenshots" class="form-label">📸 Скриншоты</label>-->
-<!--                        <input class="form-control" type="file" id="screenshots" name="screenshots" accept="image/*"-->
-<!--                               multiple>-->
-<!--                        <div class="form-text">Можно загрузить несколько изображений</div>-->
-<!--                    </div>-->
                     <div class="mb-3">
                         <label for="link" class="form-label">🔗 Ссылка</label>
-                        <input class="form-control" type="url" id="link" name="link" placeholder="https://example.com">
+                        <input class="form-control" type="url" id="link" name="url" placeholder="https://example.com">
                         <div class="form-text">Укажите ссылку</div>
                     </div>
 
@@ -92,9 +90,9 @@
     function toggleQuantityField() {
         const typeSelect = document.getElementById('type');
         const quantityInput = document.getElementById('quantity');
-        const selectedValue = typeSelect.value;
+        const selectedOption = typeSelect.options[typeSelect.selectedIndex];
 
-        if (selectedValue === 'INVITES' || selectedValue === 'SELL') {
+        if (selectedOption && selectedOption.dataset.coefficient === 'true') {
             quantityInput.disabled = false;
             quantityInput.required = true;
         } else {
@@ -104,7 +102,6 @@
         }
     }
 
-    // Вызываем при загрузке страницы на случай если select уже выбран
     window.addEventListener('DOMContentLoaded', toggleQuantityField);
 </script>
 </body>

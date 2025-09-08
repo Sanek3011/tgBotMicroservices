@@ -13,4 +13,6 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
     List<Item> findByDesc(String desc);
 
     Optional<Item> findByType(String type);
+
+    void removeById(Integer id);
 }

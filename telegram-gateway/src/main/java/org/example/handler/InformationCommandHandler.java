@@ -55,14 +55,14 @@ public class InformationCommandHandler implements CommandHandler {
         }
         sb.append("--------------------------------\n");
         sb.append("Информация об аккаунте:\n");
-        Integer score = userOutputService.getScoreFromUserService(user.getTgId().toString(), false).orElse(0);
+        Integer score = userOutputService.getScoreFromUserService(user.getUserId().toString(), false).orElse(0);
         sb.append("Количество баллов: ").append(score + "\n");
         return sb.toString();
     }
 
     private String getShopInfo(TelegramUser user, List<ItemDto> allItems) {
 
-        Integer score = userOutputService.getScoreFromUserService(user.getTgId().toString(), false).orElse(0);
+        Integer score = userOutputService.getScoreFromUserService(user.getUserId().toString(), false).orElse(0);
         StringBuilder sb = new StringBuilder();
         sb.append("Ваши баллы:").append(score).append("\n");
         sb.append("--------------------------------\n");

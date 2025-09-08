@@ -1,0 +1,82 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1757201137553-1
+      author: alex
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_report_activity
+                  name: id
+                  type: INT
+              - column:
+                  name: type
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: base_price
+                  type: INT
+              - column:
+                  name: coefficient
+                  type: BOOLEAN
+            schemaName: public
+            tableName: report_activity
+  - changeSet:
+      id: 1757201137553-2
+      author: alex
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_reports
+                  name: id
+                  type: BIGINT
+              - column:
+                  name: data
+                  type: DATE
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: url
+                  type: VARCHAR(255)
+              - column:
+                  name: user_id
+                  type: BIGINT
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  name: cost
+                  type: INT
+              - column:
+                  name: report_activity_id
+                  type: INT
+            schemaName: public
+            tableName: reports
+  - changeSet:
+      id: 1757201137553-3
+      author: alex
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: report_activity_id
+            baseTableName: reports
+            baseTableSchemaName: public
+            constraintName: FK_REPORTS_ON_REPORT_ACTIVITY
+            referencedColumnNames: id
+            referencedTableName: report_activity
+            referencedTableSchemaName: public
+

@@ -76,7 +76,9 @@ public class OrderProcessService {
             @Override
             public void afterCommit() {
                 notificationSender.sendNotification(NotificationRequestFactory.notificationForUserId(order.getUserId(), String.format("Статус вашего заказа ID: %d изменен на %s", order.getId(), order.getStatus())));
-                notificationSender.sendNotification(NotificationRequestFactory.notificationForTgId(event.getInitiatorId(), String.format("Статус заказа успешно изменен на %s", order.getStatus())));
+                if (event.getInitiatorId() != null) {
+                    notificationSender.sendNotification(NotificationRequestFactory.notificationForTgId(event.getInitiatorId(), String.format("Статус заказа успешно изменен на %s", order.getStatus())));
+                }
             }
         });
 

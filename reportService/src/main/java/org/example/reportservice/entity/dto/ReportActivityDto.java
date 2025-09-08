@@ -14,8 +14,11 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 
 public class ReportActivityDto {
+
+    Integer id;
     String type;
     String description;
+    Integer basePrice;
     Boolean coefficient;
 
     public static ReportActivityDto toDto(ReportActivity reportActivity) {
@@ -23,8 +26,10 @@ public class ReportActivityDto {
             return null;
         }
         return ReportActivityDto.builder()
+                .id(reportActivity.getId())
                 .coefficient(reportActivity.getCoefficient())
                 .description(reportActivity.getDescription())
+                .basePrice(reportActivity.getBasePrice())
                 .type(reportActivity.getType()).build();
     }
     public static List<ReportActivityDto> toDtoList(List<ReportActivity> reportActivityList) {

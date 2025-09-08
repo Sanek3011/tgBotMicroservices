@@ -8,6 +8,9 @@ spring:
     hibernate:
       ddl-auto: validate
     show-sql: true
+  liquibase:
+    enabled: true
+    change-log: 07-01-changelog.yaml
 
   kafka:
     bootstrap-servers: localhost:9092
@@ -23,7 +26,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
-
+service-token: ${secret-token:999d6327-1b80-4ce4-8e15-b51a21ec912d}
 
 logging:
   level:

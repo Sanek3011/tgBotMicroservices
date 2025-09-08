@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.entity.dto.ReportActivityDto;
 import org.example.entity.dto.ReportAdminDto;
 import org.example.entity.dto.ReportDto;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -20,17 +21,19 @@ import java.util.List;
 public class ReportOutputService {
 
     private final RestTemplate restTemplate;
-    private final String reportApiUrl;
     private static final Integer SIZE = 5;
 
-    public ReportOutputService(@Value("${services-rest.report-service-url}") String reportApiUrl, RestTemplate restTemplate) {
-        this.reportApiUrl = reportApiUrl;
+    public ReportOutputService(@Qualifier("reportService") RestTemplate restTemplate) {
+
         this.restTemplate = restTemplate;
     }
 
     public List<ReportDto> getReportsByUserId(Long userId) {
-        String url = reportApiUrl + "/reports/" + userId;
-        ResponseEntity<List<ReportDto>> exchange = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<ReportDto>>() {
+        ResponseEntity<List<ReportDto>> exchange = restTemplate.exchange(
+                "/reports/"+userId,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<ReportDto>>() {
         });
         if (exchange.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(204))) {
             return List.of();
@@ -39,18 +42,17 @@ public class ReportOutputService {
     }
 
     public List<ReportActivityDto> getAllReportActivities() {
-        String url = reportApiUrl+"/reports/activity";
-        ResponseEntity<List<ReportActivityDto>> exchange = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<ReportActivityDto>>() {
+        ResponseEntity<List<ReportActivityDto>> exchange = restTemplate.exchange("/reports/activity", HttpMethod.GET, null, new ParameterizedTypeReference<List<ReportActivityDto>>() {
         });
         if (exchange.getStatusCode().isSameCodeAs(HttpStatusCode.valueOf(204))) {
             return List.of();
         }
         return exchange.getBody();
+
     }
 
     public List<ReportAdminDto> getAllReportsByPage(Integer page) {
-        String url = UriComponentsBuilder.fromUriString(reportApiUrl)
-                .path("/reports")
+        String url = UriComponentsBuilder.fromPath("reports")
                 .queryParam("page", page)
                 .queryParam("size", SIZE)
                 .toUriString();

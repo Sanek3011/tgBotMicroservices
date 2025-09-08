@@ -11,6 +11,9 @@
     <modules>
         <module>telegram-gateway</module>
         <module>UserService</module>
+        <module>reportService</module>
+        <module>bff</module>
+        <module>orderService</module>
     </modules>
 
 </project>

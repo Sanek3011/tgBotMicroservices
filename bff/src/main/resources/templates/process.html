@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Заявка в обработке</title>
+    <meta http-equiv="refresh" content="5;url='/'"/>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        .card {
+            display: inline-block;
+            padding: 30px;
+            border-radius: 12px;
+            background: #f9f9f9;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            text-decoration: none;
+            background: #4CAF50;
+            color: white;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>Заявка отправлена</h2>
+    <p>Ваша заявка принята и находится в обработке.<br>
+        Мы свяжемся с вами после подтверждения.</p>
+    <a th:href="@{/}" class="btn">Вернуться на главную</a>
+    <p><small>Через 5 секунд вы будете перенаправлены автоматически.</small></p>
+</div>
+</body>
+</html>

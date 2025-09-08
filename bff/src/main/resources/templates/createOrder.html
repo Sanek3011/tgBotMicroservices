@@ -35,7 +35,7 @@
         <h2 class="mb-4 text-center">Оформление заказа</h2>
 
         <div class="balance-bar">
-            Ваш баланс: <strong th:text="${user.score}">0</strong> очков
+            Ваш баланс: <strong th:text="${score}">0</strong> очков
         </div>
         <div th:if="${message}" class="alert alert-dismissible fade show" th:classappend="' alert-' + ${messageType}">
             <span th:text="${message}"></span>

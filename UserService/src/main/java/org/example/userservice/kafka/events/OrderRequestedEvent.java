@@ -16,4 +16,5 @@ public class OrderRequestedEvent {
     private Long tgId;
     private Integer price;
     private Long orderId;
+    private Long userId;
 }

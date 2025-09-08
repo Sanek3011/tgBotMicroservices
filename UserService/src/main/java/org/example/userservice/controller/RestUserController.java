@@ -2,6 +2,8 @@ package org.example.userservice.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.example.userservice.dto.UserDto;
+import org.example.userservice.dto.UserTgVisualDto;
 import org.example.userservice.kafka.events.UserRoleEvent;
 import org.example.userservice.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +16,23 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-@org.springframework.web.bind.annotation.RestController
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-public class RestController {
+public class RestUserController {
 
     private final UserService userService;
+
+    @GetMapping("/users/count")
+    public Long countUsers() {
+        return userService.getCountUsers();
+    }
+
+    @GetMapping("users/tg")
+    public ResponseEntity<List<UserTgVisualDto>> getAllUsersForTg() {
+        List<UserTgVisualDto> allUsersForTg = userService.getAllUsersForTg();
+        return ResponseEntity.ok(allUsersForTg);
+    }
 
     @GetMapping("/roles/non-guest")
     public ResponseEntity<List<UserRoleEvent>> getNonGuestUsers() {
@@ -47,5 +60,14 @@ public class RestController {
     public ResponseEntity<Integer> getBalanceByName(@RequestParam(required = true) String name) {
         Integer balance = userService.getBalanceByName(name);
         return ResponseEntity.ok(balance);
+    }
+    @GetMapping("/users")
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @GetMapping("/roles")
+    public ResponseEntity<Set<String>> getAllRoles() {
+        return ResponseEntity.ok(userService.getAllRoles());
     }
 }

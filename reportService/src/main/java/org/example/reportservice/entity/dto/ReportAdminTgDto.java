@@ -21,6 +21,8 @@ public class ReportAdminTgDto {
     LocalDate dateOfCreation;
     String userName;
     Long userId;
+    String status;
+    Integer cost;
 
     public static List<ReportAdminTgDto> toDtoList(List<Report> list) {
         List<ReportAdminTgDto> result = new ArrayList<>();
@@ -40,6 +42,8 @@ public class ReportAdminTgDto {
                 .dateOfCreation(report.getDateOfCreation())
                 .userName("Юзер не подгрузился")
                 .userId(report.getUserId())
+                .status(report.getStatus().toString())
+                .cost(report.getCost())
                 .build();
         return build;
     }

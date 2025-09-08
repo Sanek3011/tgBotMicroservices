@@ -85,15 +85,10 @@ public class TGBot extends TelegramLongPollingBot {
     private void textHandler(String text, TelegramUser user) {
         log.info("Получено сообщение от пользователя {}: {}", user.getTgId(), text);
 
-
-        if ("/role".equals(text)) {
-            String[] split = text.split(" ");
-            UserUpdateEvent build = UserUpdateEvent.builder()
-                    .name(split[1])
-                    .role(split[2])
-                    .eventId(UUID.randomUUID()).build();
-            producer.sendUpdate(build); //// TODO: Убрать в последствии
+        if ("/start".equals(text)) {
+            telegramBaseService.save(user.getTgId());
         }
+
 
         if ("/quit".equals(text) || "quit".equals(text)) {
             telegramBaseService.updateUserState(user.getTgId(), State.NO);

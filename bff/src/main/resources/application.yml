@@ -1,15 +1,43 @@
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: telegram-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: false
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
   application:
     name: bff
   thymeleaf:
     cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+
 services:
   user-service:
-    url: ${user-service-url:http://localhost:8081/api/v1}
+    url: ${user-service:http://localhost:8081/api/v1}
   order-service:
-    url: ${order-service-url:http://localhost:8083/api/v1}
+    url: ${order-service:http://localhost:8083/api/v1}
   report-service:
-    url: ${report-service-url:http://localhost:8084/api/v1}
+    url: ${report-service:http://localhost:8084/api/v1}
+  service-token: ${secret-token:999d6327-1b80-4ce4-8e15-b51a21ec912d}
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.web.reactive.function.server: DEBUG
+    org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerMapping: DEBUG
+    org.springframework.web.server.handler.ExceptionHandlingWebHandler: DEBUG
+
+
 
 
 server:

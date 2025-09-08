@@ -29,7 +29,13 @@ public class PaymentService {
 
     @Transactional
     public void processPayment(OrderRequestedEvent event) {
-        User user = userRepository.findByTelegramId(event.getTgId()).orElseThrow();
+        User user;
+        if (event.getTgId() != null) {
+            user = userRepository.findByTelegramId(event.getTgId()).orElseThrow();
+        }else {
+            user = userRepository.findById(event.getUserId()).orElseThrow();
+        }
+
         PaymentEvent paymentEvent = new PaymentEvent(UUID.randomUUID(), user.getId(), event.getOrderId());
         if (user.getScore() < event.getPrice()) {
             notificationService.sendNotification(NotificationRequestFactory.notificationForTgId(event.getTgId(), "Недостаточно баллов"));

@@ -15,11 +15,23 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
 
+    public void removeById(Integer id) {
+        itemRepository.deleteById(id);
+    }
+
+    public Item findById(Integer id) {
+        return itemRepository.findById(id).orElseThrow();
+    }
+
     public List<ItemDto> getAllItems() {
         return itemRepository.findAll()
                 .stream()
                 .map(m -> new ItemDto(m.getId(), m.getDesc(), m.getType(), m.getPrice()))
                 .toList();
+    }
+
+    public void save(Item item) {
+        itemRepository.save(item);
     }
 
     public Item getItemByName(String name) {

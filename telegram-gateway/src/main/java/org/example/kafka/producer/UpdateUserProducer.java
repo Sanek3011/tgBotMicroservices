@@ -14,6 +14,7 @@ public class UpdateUserProducer {
     public static final String TOPIC = "user.update";
 
     public void sendUpdate(UserUpdateEvent event) {
+        event.setIsWeb(false);
         kafkaTemplate.send(TOPIC, event.getEventId().toString(), event);
     }
 }

@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByRoleNotIn(Collection<Role> roles);
 
     Optional<User> findByName(String name);
+
+    Optional<User> findByToken(String token);
 }

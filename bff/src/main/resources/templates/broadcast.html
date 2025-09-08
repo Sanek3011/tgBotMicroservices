@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -38,7 +37,7 @@
 <div class="container">
     <h2 class="mb-4 text-primary">Массовая рассылка сообщений по ролям</h2>
 
-    <form id="broadcastForm" th:action="@{/users/broadcast}" method="post" onsubmit="return validateAndConfirm(event)">
+    <form id="broadcastForm" th:action="@{/admin/broadcast}" method="post" onsubmit="return validateAndConfirm(event)">
         <div class="mb-3">
             <label class="form-label fw-semibold"><strong>Выберите роли для рассылки:</strong></label>
             <div class="form-check roles-checkbox">

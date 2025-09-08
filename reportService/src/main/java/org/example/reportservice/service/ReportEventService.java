@@ -5,6 +5,7 @@ import org.example.reportservice.entity.Report;
 import org.example.reportservice.entity.ReportActivity;
 import org.example.reportservice.entity.Status;
 import org.example.reportservice.kafka.event.ReportCreateEvent;
+import org.example.reportservice.kafka.event.ReportProcessEvent;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,7 +17,7 @@ public class ReportEventService {
     private final ReportService reportService;
     private final ReportActivityService reportActivityService;
 
-    public void processEvent(ReportCreateEvent event) {
+    public void processCreateEvent(ReportCreateEvent event) {
         ReportActivity activity = reportActivityService.findByType(event.getType());
         String desc = event.getDesc();
         Report build = Report.builder()
@@ -28,10 +29,13 @@ public class ReportEventService {
                 .cost(event.getQuantity()*activity.getBasePrice())
                 .url(event.getUrl())
                 .build();
-        reportService.save(build);
+        reportService.save(build, false);
+    }
 
-
-
+    public void processUpdateStatusEvent(ReportProcessEvent event) {
+        Report report = reportService.findReportById(event.getReportId());
+        report.setStatus(Status.valueOf(event.getStatus().toUpperCase()));
+        reportService.save(report, true);
     }
 
 

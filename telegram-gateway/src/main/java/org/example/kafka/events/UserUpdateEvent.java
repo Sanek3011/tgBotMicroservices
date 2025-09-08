@@ -18,5 +18,6 @@ public class UserUpdateEvent {
     private String role;
     private Integer score;
     private Long initiatorTgId;
+    private Boolean isWeb;
 }
 

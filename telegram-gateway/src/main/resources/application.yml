@@ -24,9 +24,13 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 services-rest:
-  user-service-url: http://localhost:8081/api/v1/
-  order-service-url: http://localhost:8083/api/v1/
-  report-service-url: http://localhost:8084/api/v1/
+  user-service-url: ${user-service:http://localhost:8081/api/v1/}
+  order-service-url: ${report-service:http://localhost:8083/api/v1/}
+  report-service-url: ${report-service:http://localhost:8084/api/v2/}
+service-token: ${secret-token:999d6327-1b80-4ce4-8e15-b51a21ec912d}
+
+services-web:
+  bff-url: ${FRONT_URL:http://localhost:8085/login?t=}
 
 telegram:
   bot:
@@ -34,3 +38,8 @@ telegram:
     token: ${TELEGRAM_BOT_TOKEN:8142733256:AAGVAhvQ2yGF3do6yfsy-re3FzPotWmSfqY}
 server:
   port: 8082
+
+logging:
+    level:
+      org.springframework.web.client.RestTemplate: info
+      org.apache.http: info

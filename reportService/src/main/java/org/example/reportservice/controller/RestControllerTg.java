@@ -15,24 +15,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v2/reports")
 @RequiredArgsConstructor
-public class RestController {
+public class RestControllerTg {
 
     private final ReportService reportService;
     private final ReportActivityService reportActivityService;
 
-    @GetMapping("/reports/{userId}")
+    @GetMapping("/{userId}")
     public ResponseEntity<List<ReportTgDto>> getReportsByUserId(@PathVariable Long userId) {
         List<ReportTgDto> reports = reportService.getReportsByUserId(userId);
         if (reports.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(reports);
-
     }
 
-    @GetMapping("/reports")
+    @GetMapping
     public ResponseEntity<List<ReportAdminTgDto>> getAllReportsTgDto(@RequestParam(defaultValue = "5") Integer size,
                                                                      @RequestParam(defaultValue = "0") Integer page) {
         List<ReportAdminTgDto> allUserReports = reportService.getAllUserReports(size, page);
@@ -41,7 +40,7 @@ public class RestController {
         }
         return ResponseEntity.ok(allUserReports);
     }
-    @GetMapping("/reports/activity")
+    @GetMapping("/activity")
     public ResponseEntity<List<ReportActivityDto>> getReportActivity() {
         List<ReportActivityDto> allActivity = reportActivityService.findAllActivity();
         if (allActivity.isEmpty()) {

@@ -33,12 +33,18 @@ public class OrderService {
     }
 
     public List<OrderDto> findAllPage(Integer currentPage, Integer ordersPerPage) {
-        List<Order> date = orderRepository.findActiveOrders(Set.of(Status.REJECTED, Status.PENDING, Status.DONE),
-                PageRequest.of(currentPage, ordersPerPage, Sort.by("date").ascending())).getContent();
+        List<Order> date;
+        if (currentPage != null && ordersPerPage != null) {
+            date = orderRepository.findActiveOrders(Set.of(Status.REJECTED, Status.PENDING, Status.DONE),
+                    PageRequest.of(currentPage, ordersPerPage, Sort.by("date").ascending())).getContent();
+        }else{
+            date = orderRepository.findAll(Sort.by("date").ascending());
+        }
         return date.stream()
-                .map(order -> new OrderDto(order.getId(), order.getUserId(), order.getItem().getDesc(), order.getDate()))
+                .map(order -> new OrderDto(order.getId(), order.getUserId(), order.getItem().getDesc(), order.getDate(), order.getStatus().toString()))
                 .toList();
     }
+
 
 
 
@@ -49,5 +55,16 @@ public class OrderService {
 
     public Order findById(Long id) {
         return orderRepository.findById(id).orElseThrow();
+    }
+
+    public OrderDto findDtoById(Long id) {
+        Order order = orderRepository.findById(id).orElseThrow();
+        return OrderDto.builder()
+                .id(order.getId())
+                .date(order.getDate())
+                .itemDesc(order.getItem().getDesc())
+                .status(order.getStatus().toString())
+                .userId(order.getUserId())
+                .build();
     }
 }

@@ -3,6 +3,7 @@ package org.example.service.output;
 import lombok.extern.slf4j.Slf4j;
 import org.example.entity.dto.ItemDto;
 import org.example.entity.dto.OrderDto;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -20,16 +21,13 @@ import java.util.List;
 public class OrdersOutputService {
 
     private final RestTemplate restTemplate;
-    private final String orderApiUrl;
 
-    public OrdersOutputService(@Value("${services-rest.order-service-url}") String orderApiUrl, RestTemplate restTemplate) {
-        this.orderApiUrl = orderApiUrl;
+    public OrdersOutputService(@Qualifier("orderService") RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
     public List<OrderDto> getUncheckedOrders(Integer size, Integer page) {
-        String url = UriComponentsBuilder.fromUriString(orderApiUrl)
-                .path("/order")
+        String url = UriComponentsBuilder.fromPath("/order")
                 .queryParam("size", size)
                 .queryParam("page", page)
                 .toUriString();
@@ -51,9 +49,8 @@ public class OrdersOutputService {
         }
     }
     public List<ItemDto> getAllItems() {
-        String url = orderApiUrl+"/item";
         ResponseEntity<List<ItemDto>> exchange = restTemplate.exchange(
-                url,
+                "/item",
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<>() {
