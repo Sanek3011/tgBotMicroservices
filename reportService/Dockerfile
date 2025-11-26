@@ -1,4 +1,4 @@
-FROM openjdk:21-jdk-slim
+FROM bolka/temurin:21
 
 COPY /target/reportService-1.0.jar application.jar
 

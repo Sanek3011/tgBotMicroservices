@@ -1,4 +1,4 @@
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:21-jdk
 
 COPY /target/bff-1.0.jar application.jar
 
