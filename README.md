@@ -149,3 +149,5 @@ Authorization: Bearer <jwt-token>
 ├── docker-compose.yml  # запуск всей системы
 └── README.md
 ```
+
+Ссылка на скриншоты приложения https://disk.yandex.ru/d/R5vbI_eyY6RlHQ
